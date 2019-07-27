@@ -2,9 +2,9 @@ from rest_framework import status
 from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Note,User
+from .models import Note,User,LocationLog
 from django.http import HttpResponse,HttpRequest, JsonResponse
-from .serializers import NoteSerializer
+from .serializers import NoteSerializer,LocationSerializer
 from django.contrib.auth import authenticate
 
 class login(APIView):
@@ -34,3 +34,14 @@ class addNote(APIView):
 		print("saved")
 
 		return JsonResponse({"response":"saved"})
+
+class location(APIView):
+    def post(self, request,format=None):
+        user =  User.objects.get( username = request.data['username'] )
+        lng = request.data['lng']
+        lat = request.data['lat']
+        locationlog = LocationLog(username=user,lat=lat,lng=lng)
+
+        locationlog.save()
+        print("location saved")
+        return JsonResponse({"response": "location saved"})

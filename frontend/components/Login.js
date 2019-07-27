@@ -1,7 +1,10 @@
-import React, { Component } from 'react'
-import Input from './Input.js'
-import Button from './Button.js'
-import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native'
+/* eslint-disable eqeqeq */
+/* eslint-disable no-unused-vars */
+/* eslint-disable prettier/prettier */
+import React, { Component } from 'react';
+import Input from './Input.js';
+import Button from './Button.js';
+import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import Note from './Note.js';
 
 class Login extends Component {
@@ -11,92 +14,102 @@ class Login extends Component {
       this.state = {
          username: '',
          password: '',
-         auth: false
+         auth: false,
+
        };
      }
 
-   
-   
+
+
 login = async () => {
-        
-     
-   fetch("http://127.0.0.1:8000/api/login/", {
+
+
+   fetch('http://192.168.1.20:8000/api/login/', {
 method: 'POST',
 headers: {
-  Accept: 'application/json',
-  'Content-Type': 'application/json',
+  Accept: 'application/json ',
+  'Content-Type': 'application/json ',
 },
 body: JSON.stringify({
-   "username": this.state.username,
-   "password": this.state.password
+   'username': this.state.username,
+   'password': this.state.password,
 }),
 })
 .then(response => response.json())
       .then((responseJson)=> {
-         
-         if(responseJson.username==this.state.username){
-            this.setState({auth: true})
+
+         if (responseJson.username == this.state.username){
+            this.setState({auth: true});
          }
-         else{
-            console.log("incorrect")
+         else {
+            console.log('incorrect');
          }
-        
-        
+
+
       })
-      .catch(error=>console.log(error)) 
-   } 
+      .catch(error=>console.log(error));
+   }
 
 
 
-   
+
    handleUsername = (text) => {
-      this.setState({ username: text })
+      this.setState({ username: text });
    }
    handlePassword = (text) => {
-      this.setState({ password: text })
+      this.setState({ password: text });
    }
-   
+
+
+
    render() {
-      if(this.state.auth){
-         return( 
-           <View > 
+      if (this.state.auth){
+         return (
+           <View >
             <Note username={this.state.username}/>
            </View>
-       )}
+       );}
       return (
          <View style={styles.container}>
-            <Input 
-               
+         <View style={[styles.container,{marginTop: 130 }]}>
+         <Input
+
                placeholder = "Enter Username"
                onChangeText = {this.handleUsername}/>
-            
-            <Input 
+               </View>
+            <Input
                placeholder = "Enter Password"
                onChangeText = {this.handlePassword}
                secureTextEntry
                />
-            
+               
             <TouchableOpacity
-               style={styles.button}
-               onPress = {()=>{this.login()}}>
+               style={[styles.button,styles.mid]}
+               onPress = {()=>{this.login();}}>
                <Text>Submit</Text>
             </TouchableOpacity>
+
          </View>
-      )
+      );
    }
 }
-export default Login
+export default Login;
 
-const styles = StyleSheet.create ({
+const styles = StyleSheet.create({
    container: {
       alignItems: 'center',
    },
    button: {
-      flex: 1, 
-      justifyContent: "center", 
-      alignItems: "center",
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
       borderWidth: 1,
-      borderColor: "black",
-      paddding: 10
-   }
-})
+      borderColor: 'black',
+      padding: 10,
+   },
+   mid: {
+      flex: 1,
+      marginTop: 50,
+
+   },
+});
