@@ -10,7 +10,6 @@ from django.contrib.auth import authenticate
 class login(APIView):
 
 	def post(self, request, format=None):
-		serializer = NoteSerializer(data=request.data)
 		username = request.data['username']
 		password = request.data['password']
 
@@ -20,7 +19,7 @@ class login(APIView):
 			print("correct")
 			return JsonResponse({"username":username})
 		else:
-			print("incorrect")
+			print("incorrect username/password")
 			return JsonResponse({})
 
 class addNote(APIView):
@@ -31,9 +30,9 @@ class addNote(APIView):
 		note = Note(content=content, username=user)
 
 		note.save()
-		print("saved")
+		print("note saved")
 
-		return JsonResponse({"response":"saved"})
+		return JsonResponse({"response":"note saved"})
 
 class location(APIView):
     def post(self, request,format=None):

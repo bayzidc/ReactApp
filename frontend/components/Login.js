@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import Input from './Input.js';
 import Button from './Button.js';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, ToastAndroid } from 'react-native';
 import Note from './Note.js';
 
 class Login extends Component {
@@ -15,16 +15,12 @@ class Login extends Component {
          username: '',
          password: '',
          auth: false,
-
        };
      }
 
-
-
 login = async () => {
 
-
-   fetch('http://192.168.1.20:8000/api/login/', {
+   fetch('http://192.168.0.4:8000/api/login/', {
 method: 'POST',
 headers: {
   Accept: 'application/json ',
@@ -37,21 +33,16 @@ body: JSON.stringify({
 })
 .then(response => response.json())
       .then((responseJson)=> {
-
+  
          if (responseJson.username == this.state.username){
             this.setState({auth: true});
          }
          else {
             console.log('incorrect');
          }
-
-
       })
       .catch(error=>console.log(error));
    }
-
-
-
 
    handleUsername = (text) => {
       this.setState({ username: text });
@@ -59,8 +50,6 @@ body: JSON.stringify({
    handlePassword = (text) => {
       this.setState({ password: text });
    }
-
-
 
    render() {
       if (this.state.auth){

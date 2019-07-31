@@ -189,7 +189,6 @@ android {
 
 dependencies {
     implementation project(':react-native-background-fetch')
-    implementation project(':@react-native-community_geolocation')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation "com.google.android.gms:play-services-location:16.0.0"

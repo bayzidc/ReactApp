@@ -25,7 +25,7 @@ SECRET_KEY = 'ws-ikas54-f5#am4$z^407btkmhz@yi7=lsrqwlhv6&xwoqn!d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.0.4']
 
 
 # Application definition

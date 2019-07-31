@@ -1,4 +1,3 @@
-
 import React, { Component } from "react";
 import Geolocation from '@react-native-community/geolocation';
 import BackgroundFetch from "react-native-background-fetch";
@@ -15,21 +14,6 @@ import {
 import Input from "./Input.js";
 import Button from "./Button.js";
 
-let MyHeadlessTask = async () => {
-   console.log('[BackgroundFetch HeadlessTask] start');
- 
-   // Perform an example HTTP request.
-   // Important:  await asychronous tasks when using HeadlessJS.
-   let response = await fetch('https://facebook.github.io/react-native/movies.json');
-   let responseJson = await response.json();
-   console.log('[BackgroundFetch HeadlessTask response: ', responseJson);
- 
-   // Required:  Signal to native code that your task is complete.
-   // If you don't do this, your app could be terminated and/or assigned
-   // battery-blame for consuming too much time in background.
-   BackgroundFetch.finish();
- }
- BackgroundFetch.registerHeadlessTask(MyHeadlessTask); 
 
 class Note extends Component {
   constructor(props) {
@@ -39,31 +23,31 @@ class Note extends Component {
       username: this.props.username,
       noteAdded : false,
       locationAdded: false,
-      ready: false,
       where: { lat: null, lng: null },
       error: null,
     };
   }
 
-  componentDidMount() {
-
-   let geoOptions = {
+  getLocation(){
+    let geoOptions = {
       enableHighAccuracy: false,
       timeOut: 20000, //20 second
       //  maximumAge: 1000 //1 second
     };
-
-    this.setState({ ready: false, error: null });
 
     navigator.geolocation.getCurrentPosition(
       this.geoSuccess,
       this.geoFailure,
       geoOptions
     );
+  }
 
+  componentDidMount() {
+
+  this.getLocation();
 
    BackgroundFetch.configure({
-      minimumFetchInterval: 1,     // <-- minutes (15 is minimum allowed)
+      minimumFetchInterval: 15,     // <-- minutes (15 is minimum allowed)
       // Android options
       stopOnTerminate: false,
       startOnBoot: true,
@@ -74,15 +58,8 @@ class Note extends Component {
       requiresStorageNotLow: false  // Default
     }, () => {
       console.log("Received background-fetch event");
-      if(this.state.ready){
-         console.log("ready");
-         console.log(this.state.where.lat);
-         console.log(this.state.where.lng);
-         this.addLocation();
-      }
-      else{
-         console.log("not ready");
-      }
+
+      this.getLocation();
       
       // Required: Signal completion of your task to native code
       // If you fail to do this, the OS can terminate your app
@@ -103,37 +80,27 @@ class Note extends Component {
           break;
         case BackgroundFetch.STATUS_AVAILABLE:
           console.log("BackgroundFetch is enabled");
-          if(this.state.ready){
-            console.log("ready");
-            console.log(this.props.username);
-            console.log(this.state.where.lat);
-            console.log(this.state.where.lng);
-            this.addLocation();
-         }
-         else{
-            console.log("not ready");
-         }
           break;
       }
     });
 }
 
 geoSuccess = position => {
-//   console.log("here");
+   console.log("setting location state");
    this.setState({
-     ready: true,
      where: { lat: position.coords.latitude, lng: position.coords.longitude },
    });
    
-   // console.log(position.coords.latitude);
-   // console.log(position.coords.longitude);
+    console.log(position.coords.latitude);
+    console.log(position.coords.longitude);
+    this.addLocation();
  };
  geoFailure = err => {
    this.setState({ error: err.message });
  };
 
  addLocation = async () => {
-   fetch("http://192.168.1.20:8000/api/locationlog/", {
+   fetch("http://192.168.0.4:8000/api/locationlog/", {
      method: "POST",
      headers: {
        Accept: "application/json",
@@ -153,10 +120,8 @@ geoSuccess = position => {
      .catch(error => console.log(error));
  };
 
-
-
   addNote = async () => {
-    fetch("http://192.168.1.20:8000/api/add_note/", {
+    fetch("http://192.168.0.4:8000/api/add_note/", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -202,11 +167,9 @@ geoSuccess = position => {
       } catch (err) {
         console.warn(err);
       }
-    }
-    
+    } 
     requestLocationPermission();
     
-
 
     return (
       <View style={styles.container}>
@@ -221,7 +184,6 @@ geoSuccess = position => {
         >
           <Text style={[{marginTop: 2}]}>Submit</Text>
         </TouchableOpacity>
-
       </View>
     );
   }
